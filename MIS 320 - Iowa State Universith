@@ -1,0 +1,770 @@
+CREATE SCHEMA pitt;
+
+DROP SCHEMA pitt;
+
+--Create Customer  Table
+CREATE TABLE pitt.Customer (
+   Customer_Id INT NOT NULL,
+   Customer_Name NVARCHAR(255),
+   CONSTRAINT customerPK PRIMARY KEY (Customer_Id)
+);
+
+--Query the new table
+SELECT * FROM pitt.Customer;
+
+--Insert records into new table
+INSERT INTO pitt.Customer
+VALUES(1, 'Customer Name');
+
+--Insert Multiple records into new table
+INSERT INTO pitt.Customer
+VALUES (2, 'Customer Name'),
+       (3, 'Customer Name');
+
+--Insert records into new table
+INSERT INTO pitt.Customer (Customer_Name)
+VALUES ('Customer Name 4');
+
+--Drop Table
+DROP TABLE pitt.Customer;
+
+--Create Customer table using IDETITY for PK
+CREATE TABLE pitt.Customer (
+   Customer_Id INT IDENTITY(1,1) NOT NULL,
+   Customer_Name NVARCHAR(255),
+   CONSTRAINT customerPK PRIMARY KEY (Customer_Id)
+);
+
+--Insert records on new Customer table
+INSERT INTO pitt.Customer VALUES ('Customer Name 1');
+
+--Query records on new Customer Table
+SELECT * FROM pitt.Customer;
+
+--Insert a few more records on new Customer Table
+INSERT INTO pitt.Customer
+   VALUES ('Customer NAME 2'),
+   ('Customer Name 3'),
+   ('Customer Name 4'),
+   ('Customer Name 5');
+
+   --Drop Customer Table
+   DROP TABLE pitt.Customer;
+
+
+--Create a new Customer Table
+--Create Customer Table usinng IDENTITY for pk
+   CREATE TABLE pitt.Customer (
+   Customer_Id INT IDENTITY(1,1) NOT NULL,
+   Customer_Name NVARCHAR(255),
+   Customer_Type NCHAR(1) NOT NULL DEFAULT 'A' CHECK (Customer_Type IN ('A','B')),
+   CONSTRAINT customerPK PRIMARY KEY (Customer_Id)
+);
+
+--Insert records into new table
+INSERT INTO pitt.Customer
+VALUES('Customer_Name 1', 'A');
+
+--Insert a few more Customers
+--Insert a few more records on new Customer Table
+INSERT INTO pitt.Customer
+   VALUES ('Customer NAME 2', 'A'),
+   ('Customer Name 3', 'B'),
+   ('Customer Name 4', 'A'),
+   ('Customer Name 5', 'B');
+
+--Drop Customer Table
+   DROP TABLE pitt.Customer;
+
+   --Create a new Customer Table
+c
+
+--Insert records on new Customer table
+INSERT INTO pitt.Customer (Customer_Name, Customer_Type)
+VALUES ('Customer NAME 2', 'A'),
+   ('Customer Name 3', 'B'),
+   ('Customer Name 4', 'A'),
+   ('Customer Name 5', 'B');
+
+SELECT * FROM pitt.Customer;
+
+--Drop Customer Table
+   DROP TABLE pitt.Customer;
+   DROP TABLE pitt.Online_Order;
+
+
+--Create a new Order Table
+--Create OrderTable usinng IDENTITY for pk
+CREATE TABLE pitt.Online_Order (
+   Order_Id INT IDENTITY(1,1) NOT NULL,
+   Customer_ID INT NOT NULL,
+   Order_Date DATE  DEFAULT GETDATE(),
+   CONSTRAINT OrderPK PRIMARY KEY (Order_Id),
+   CONSTRAINT OrderFk FOREIGN KEY (Customer_ID) REFERENCES pitt.Customer (Customer_ID)
+);
+
+
+
+--Insert records on new Customer table
+INSERT INTO pitt.Customer (Customer_Name, Customer_Type)
+VALUES ('Customer NAME 2', 'A'),
+   ('Customer Name 3', 'B'),
+   ('Customer Name 4', 'A'),
+   ('Customer Name 5', 'B');
+
+   SELECT * FROM pitt.Customer;
+
+   --Query CUSTOMER Table
+   SELECT * FROM pitt.Customer;
+   SELECT * FROM pitt.Online_Order;
+
+   --Insert records on Online Order
+   INSERT INTO pitt.Online_Order
+   VALUES (1, '2019-01-24'),
+   (1, '2019-01-24'),
+   (2, '2016-01-24'),
+   (2, '2014-01-24'),
+   (4, '2019-01-24'),
+   (4, '2013-01-24'),
+   (1, '2019-01-24');
+  
+--Delete Customer with Customer ID = 1
+DELETE FROM pitt.Customer
+   WHERE Customer_ID =1;
+
+-- Drop Foreign Key Constraint Online Order Table
+ALTER TABLE pitt.Online_Order DROP CONSTRAINT OrderFK;
+
+-- Remove Orders for Customer Id = 1
+DELETE FROM pitt.Online_Order
+WHERE Customer_ID = 1;
+
+-- Add Foreign key constraints on online order table
+ALTER TABLE pitt.Online_Order ADD CONSTRAINT OrderFK
+FOREIGN KEY (Customer_ID)
+REFERENCES pitt.Customer (Customer_ID)
+ON DELETE CASCADE
+
+-- Remove Orders for Customer Id = 2
+DELETE FROM pitt.Online_Order
+WHERE Customer_ID = 2;
+
+
+-- Update Customer Table
+UPDATE pitt.Customer
+SET Customer_Type = 'A',
+Customer_Name = UPPER(Customer_Name)
+WHERE Customer_ID = 4;
+
+--Check Data on Customer
+SELECT * FROM pitt.Customer WHERE Customer_ID = 3;
+
+---Create Customer Table usinng IDENTITY for pk
+   CREATE TABLE pitt.Customer2 (
+   Customer_Id INT IDENTITY(1,1) NOT NULL,
+   Customer_Name NVARCHAR(255),
+   Customer_Type NCHAR(1) NOT NULL DEFAULT 'A' CHECK (Customer_Type IN ('A','B')),
+   CONSTRAINT customerPK2 PRIMARY KEY (Customer_Id)
+);
+
+--Insert records on new Customer2 table
+INSERT INTO pitt.Customer2 (Customer_Name, Customer_Type)
+VALUES ('Customer NAME 102', 'A'),
+      ('Customer Name 102', 'B'),
+      ('Customer Name 102', 'A'),
+      ('Customer Name 102', 'B');
+
+SELECT * FROM pitt.customer;
+SELECT * FROM pitt.customer2;
+
+-- Merge Example
+MERGE INTO pitt.Customer AS TARGET
+USING
+(SELECT * FROM pitt.Customer2) AS SOURCE
+ON TARGET.Customer_ID = SOURCE.Customer_ID
+WHEN MATCHED THEN UPDATE
+SET Customer_Name = SOURCE.Customer_Name
+WHEN NOT MATCHED THEN INSERT
+(Customer_Name , Customer_Type)
+VALUES
+(SOURCE.Customer_Name, SOURCE.Customer_Type);
+
+
+
+-- List records on Customer Table
+SELECT * FROM SalesLT.Customer;
+
+--Count Number of Records
+SELECT COUNT(CustomerID), COUNT(MiddleName) FROM SalesLT.Customer;
+
+--List Top 10 Records on Customer Table
+SELECT TOP 10 * FROM SalesLT.Customer;
+
+--List Top 10 Records from Product Table
+SELECT TOP 10
+       Prd.Name AS Product_Name,
+       Prd.Color AS Product_Color
+FROM SalesLT.Product AS Prd
+
+-- Using WHERE Conditions
+SELECT *
+FROM SalesLT.Product
+WHERE Color = 'Black'
+   AND NOT ProductNumber LIKE '%R38%'
+   AND StandardCost > 1000  or  BETWEEN 1000 AND 5000
+   AND (StandardCost >=000 AND StandardCost <=5000)
+ORDER BY ListPrice DESC ASC
+
+--List Top 3 Red Products by Weight
+
+
+
+-- Use Aggregation functions
+SELECT Color, COUNT(*) AS TheCount
+FROM SalesLT.Product
+WHERE Color != 'Red' AND Color IS NOT NULL
+GROUP BY Color
+HAVING COUNT(*) >10
+ORDER BY TheCount DESC
+
+
+-- top 3 COLORS by record count desc/asc
+SELECT TOP 3 Color, COUNT(*) AS TheCount
+FROM SalesLT.Product
+WHERE Color != 'Red' AND Color IS NOT NULL
+GROUP BY Color
+ORDER BY TheCount ASC
+
+-- Report Color, MIN Price, Max Price
+SELECT TOP 5 Color,
+           COUNT(*) AS Record_Count,
+           AVG(ListPrice) AS AVG_Price,
+           MIN(ListPrice) AS Min_Price,
+           MAX(ListPrice) AS Max_Price,
+           (MAX(ListPrice) - MIN(ListPrice)) AS Variance
+FROM SalesLT.Product
+WHERE Color = 'Red' OR Color = 'Black'
+GROUP BY Color
+HAVING  (MAX(ListPrice) - MIN(ListPrice)) >0
+ORDER BY Variance DESC
+
+-- CREATE VIEW
+CREATE VIEW SalesLT.ProductCountByColor
+AS
+SELECT TOP 5 Color,
+           COUNT(*) AS Record_Count,
+           AVG(ListPrice) AS AVG_Price,
+           MIN(ListPrice) AS Min_Price,
+           MAX(ListPrice) AS Max_Price,
+           (MAX(ListPrice) - MIN(ListPrice)) AS Variance
+FROM SalesLT.Product
+WHERE Color IS NOT NULL
+GROUP BY Color
+HAVING  (MAX(ListPrice) - MIN(ListPrice)) >0
+-- ORDER BY Variance DESC
+SELECT * FROM  SalesLT.ProductCountByColor
+-- DROP VIEW
+
+
+-- JOINS
+SELECT PrdM.Name AS Product_Model_Name,
+      Prd.Color AS Product_Color,
+      MAX(Prd.ListPrice) AS MAX_ListPrice
+FROM   SalesLT.Product AS Prd
+      INNER JOIN SalesLT.ProductModel AS PrdM
+           ON Prd.ProductModelID = PrdM.ProductModelID
+GROUP BY PrdM.Name, Prd.Color
+
+-- JOINS 295 records in product
+SELECT COUNT(*)
+FROM   SalesLT.Product AS Prd
+      INNER JOIN SalesLT.ProductModel AS PrdM
+           ON Prd.ProductModelID = PrdM.ProductModelID
+
+SELECT 295-284
+
+UPDATE SalesLT.ProductCountByColor
+SET ProductModelID = NULL
+WHERE Product
+
+
+
+
+-- LAB 1.A
+
+SELECT TOP 10
+       C.CompanyName AS CompanyName,
+       PM.Name AS ProductModelName,
+       SUM(SOD.LineTotal) SUMLineTotal
+FROM SalesLT.Customer AS C
+   INNER JOIN SalesLT.SalesOrderHeader SO
+       ON C.CustomerID = SO.CustomerID
+   INNER JOIN SalesLT.SalesOrderDetail SOD
+       ON SO.SalesOrderID = SOD.SalesOrderID
+   INNER JOIN SalesLT.Product P
+       ON P.ProductID = SOD.ProductID
+   INNER JOIN SalesLT.ProductModel PM
+       ON PM.ProductModelID = P.ProductModelID
+WHERE P.Color IN ('Red', 'Black')
+GROUP BY C.CompanyName, PM.Name
+Order By SUMLineTotal DESC;
+
+--LAB 1.B
+
+SELECT TOP 3
+   A.City,
+   COUNT(SOH.SalesOrderID) AS NumBikesSold
+FROM SalesLT.Address A
+   INNER JOIN SalesLT.SalesOrderHeader SOH
+       ON A.AddressID = SOH.BillToAddressID
+   INNER JOIN SalesLT.SalesOrderDetail SOD
+       ON SOH.SalesOrderID = SOD.SalesORderID
+   INNER JOIN SalesLT.Product P
+       ON SOD.ProductID = P.ProductID
+   INNER JOIN SalesLT.ProductCategory PC
+       ON P.ProductCategoryID = PC.ProductCategoryID
+WHERE PC.Name = 'Mountain Bikes'
+GROUP BY A.City
+ORDER BY NumBikesSold DESC;
+
+--1.C Parent_Category, CountofCategories
+-- Self Join
+SELECT ParentPC.Name AS Parent_Category,
+      COUNT(ChildPC.Name) AS CountOfCategories
+FROM SalesLT.ProductCategory ParentPC
+       INNER JOIN SalesLT.ProductCategory ChildPC
+           ON ParentPC.ProductCategoryId = ChildPC.ProductCategoryID
+
+GROUP BY ParentPC.Name
+ORDER BY CountOfCategories DESC
+
+
+
+
+
+
+SELECT COUNT (*) FROM SalesLT.Customer; -- 847
+
+SELECT COUNT (*) FROM SalesLT.Customer
+WHERE MiddleName IS NOT NULL  -- 504
+
+SELECT MIN(CustomerID) AS MIN_CustID,
+      MAX(CustomerID) AS MAX_CustID,
+      AVG(CustomerID) AS AVG_CustID
+FROM SalesLT.Customer AS CALL
+-- WHERE CustomerID BETWEEN 20000 and 30000
+WHERE CustomerID >= 20000 AND CustomerID <= 30000
+
+SELECT TOP 10 * FROM SalesLT.Customer
+
+SELECT FirstName
+FROM SalesLT.Customer
+WHERE FirstName LIKE '%nn%'
+
+SELECT *
+FROM SalesLT.Customer
+WHERE FirstName LIKE '%nn%'
+ORDER BY LastName
+
+SELECT MiddleName, COUNT(*) as TheCount
+FROM SalesLT.Customer
+WHERE FirstName LIKE '%nn%'
+GROUP BY MiddleName
+ORDER BY TheCount DESC
+
+SELECT Title, COUNT(*) as TheCount
+FROM SalesLT.Customer
+GROUP BY Title
+
+SELECT COUNT(DISTINCT MiddleName) as TheCount
+FROM SalesLt.Customer
+
+SELECT COUNT(DISTINCT CustomerID)
+FROM SalesLT.Customer
+
+SELECT COUNT(DISTINCT C.CustomerID)
+FROM SalesLT.Customer AS C
+   LEFT OUTER JOIN SalesLT.SalesOrderHeader SOH
+   ON C.CustomerID = SOH.CustomerID
+
+
+
+-- Question 1
+SELECT COUNT(CustomerID) AS TheCount
+FROM SalesLT.Customer
+WHERE MiddleName IS NULL
+AND Title IS NULL
+AND CustomerID >= 100 AND CustomerID <= 500
+AND Phone LIKE '%7%'
+
+-- Question 2
+SELECT TOP 10
+   ProductNumber,
+   SP.Name,
+   Color
+FROM SalesLT.Product AS SP
+WHERE Color IN ('Black', 'Red')
+   AND NOT ProductNumber LIKE '%R39%'
+   AND StandardCost BETWEEN 0 AND 500 OR StandardCost BETWEEN 1000 AND 1500
+ORDER BY COLOR ASC, ProductNumber DESC, SP.Name ASC;
+
+
+--Question 3
+SELECT TOP 3
+  
+   Color,
+   COUNT(*) AS TheCount,
+   MIN(SP.Weight) AS Min_Weight,
+   AVG(SP.Weight) AS AVG_Weight,
+   MAX(SP.Weight) AS Max_Weight,
+   (MAX(SP.Weight) - MIN(SP.Weight)) AS Variance
+FROM SalesLT.Product AS SP
+WHERE Color != 'Red' AND Color != 'Silver'
+AND SellEndDate IS NULL
+AND Size NOT IN ('s', 'M', 'L', 'XL')
+AND SIZE IS NOT NULL
+GROUP BY Color
+HAVING  (MIN(SP.Weight)) >= 900
+ORDER BY TheCount DESC;
+
+--Question 4
+SELECT TOP 2
+   P.Color,
+   COUNT (PM.Name) AS Number_of_Models,
+   (MAX(P.ListPrice) * 9) AS Max_List_Price_Euros
+FROM SalesLT.Product AS P
+   INNER JOIN SalesLT.ProductModel PM
+       ON P.ProductModelID = PM.ProductModelID
+WHERE P.Color IS NOT NULL   
+   AND PM.CatalogDescription IS NOT NULL
+GROUP BY P.Color
+HAVING COUNT(PM.Name) >9
+   OR MAX(P.ListPrice) < 2385
+ORDER BY P.COLOR ASC;
+
+
+--Question 5
+
+SELECT 
+   PM.Name AS Product_Model.
+   PC.Name AS Product_Category,
+   AVG(SOD.LineTotal) AS AVG_Line_Total
+FROM SalesLT.Customer AS C
+   INNER JOIN SalesLT.SalesOrderHeader SOH
+       ON C.CustomerID = SOH.CustomerID
+   INNER JOIN SalesLT.SalesOrderDetail 500
+       ON SOH.SalesOrderID = 500.SalesOrderID
+   INNER JOIN SalesLT.Product P
+       ON 500.ProductID = P.ProdcutOD
+   INNER JOIN SalesLT.ProductModel PM
+       ON P.ProductModelID = PM.ProductModelID
+   INNER JOIN SalesLT.ProductCategory PC
+       ON P.ProductCategoryID = PC.ProductCategoryID
+WHERE PC.Name LIKE '%bike%'
+   AND P.Color IN ('Red', 'Black')
+   AND SOH.RevisionNumber = 2
+   AND C.MiddeName IS NULL
+GROUP BY PM.Name, PC.NAME
+
+
+
+
+
+
+
+
+LAB 3 Q1
+
+Using a single SELECT statement, report the number of Products (SalesLT.Product): - Without Size and without Weight - Product ID numeric value between 100 and 500 - Product number starts with CAThe report should return a single column called TheCount and a single row with the number of records.
+
+SELECT COUNT(*) AS TheCount
+FROM SalesLT.Product
+WHERE Product.Size IS NULL
+AND  Product.Weight IS NULL
+AND ProductID BETWEEN 100 AND 500
+AND ProductNumber LIKE 'CA%'
+
+
+
+Q2
+
+Using a single SELECT statement, report the First Name, Last Name, and the Company Name (SalesLT.Customer) including only records where: - There is a Middle Name - The Phone area code (first 3 digits) is 129 - The Company Name includes the word Sporting or the word Part - The Customer ID is between 100 and 600 or between 20000 and 30000 The result should be order by: - Last Name in ascending order - Company Name in descending order The report should return 3 columns and 3 records
+
+SELECT FirstName,
+   LastName,
+   CompanyName,
+   Phone
+FROM SalesLt.Customer
+WHERE MiddleName IS NOT NULL
+   AND Phone LIKE '129%'
+   AND (CompanyName LIKE '%Sporting%' OR CompanyName LIKE '%Part%')
+   AND (CUstomerID BETWEEN 100 AND 600
+   OR CustomerID BETWEEN 20000 AND 30000)
+ORDER BY LastName ASC, CompanyName DESC;
+
+Q3
+
+Using a single SELECT statement, report the Top 10 records from the SalesLT.SalesOrderDetail table. Include only the following columns:
+ - SalesOrderID 
+- Number of records. Call the column TheCount 
+Notify users this quiz has changed
+ - Minimum Line Total. Call the column MIN_LineTotal 
+- Average Line Total. Call the column AVG_LineTotal 
+- Maximum Line Total. Call the column MAX_LineTotal 
+- Difference between the Maximum UnitPrice and he Minimum UnitPrice. Call the column Unit_Price_Variance Only include records where: 
+- OrderQty is 1,3,5 or 7 
+- Product ID value is an even number 
+- Unit Price Discount is greater than 0 
+- Sales Order ID is between 71780 and 71900 or between 72000 and 73000 
+In addition, for the final result, include only records where the Average of LineTotal is greater or equal than 100 Finally, sort the records by TheCount in descending order. 
+Note: To test if a numeric value is even or odd, you can use the % mathematical operator (remainder). 
+Try running the following statements to understand how the operator works: 
+SELECT 4 % 2 -- 4 is an even number SELECT 5 % 2 -- 4 is NOT an even number
+
+
+SELECT TOP 10 SalesOrderID,
+   COUNT(*) AS TheCount,
+   MIN(LineTotal) AS MIN_LineTotal,
+   AVG(LineTotal) AS AVG_LineTotal,
+   MAX(LineTotal) AS MAX_LineTotal,
+   (MAX(UnitPrice) - MIN(UnitPrice)) AS Unit_Price_Variance
+FROM SalesLT.SalesOrderDetail
+WHERE OrderQty = 1 OR OrderQty = 3 OR OrderQty = 5 OR OrderQty = 7
+   AND ProductID % 2 = 0
+   AND UnitPriceDiscount > 0
+   AND (SalesOrderID BETWEEN 71780 AND 71900 OR SalesOrderID BETWEEN 72000 AND 73000)
+GROUP BY OrderQty, SalesOrderID
+HAVING AVG(LineTotal) >= 100
+ORDER BY TheCount DESC
+
+Q4
+
+The sales department needs to report on the best product sellers by category and color.
+Using a single SELECT statement create a report that lists only the following columns:
+- Name from the Product Category table. Call this column Product_Category_Name
+- Name from the Product Model table. Call this column Product_Model_Name
+- The Sum of the Line Total column from the Sales Order Detail table. Call this column SUM_Line_Total
+- The Average of the Unit Price column from the Sales Order Detail table. Call this column AVG_Unit_Price
+Only include records where:
+- Product Color is Red, Blue, or Multi
+- Product Size is NULL or Product Weight IS NULL, but not both at the same time
+Additionally, make sure to include only records where:
+- Average of Unit Price (from the Sales Order Detail table) is greater than 10 or between 200 and 1000
+- And Sum of Line Total (from the Sales Order Detail table) is greater than 2000
+- And Average of Order Qty (from the Sales Order Detail table) is less than 4
+Order the result by Product Category Name and Product Model Name
+
+
+SELECT PC.Name AS Product_Category_Name,
+   PM.Name AS Product_Model_Name,
+   SUM(SOD.LineTotal) AS SUM_Line_Total,
+   AVG(SOD.UnitPrice) AS AVG_Unit_Price
+
+FROM SalesLT.ProductCategory PC
+INNER JOIN SalesLT.Product P
+   ON PC.ProductCategoryID = P.ProductCategoryID
+INNER JOIN SalesLT.ProductModel PM
+   ON P.ProductModelID = PM.ProductModelID
+INNER JOIN  SalesLT.SalesOrderDetail SOD
+   ON P.ProductID = SOD.ProductID
+  
+WHERE P.Color LIKE 'Red'
+   OR P.Color LIKE 'Blue'
+   OR P.Color LIKE 'Multi'
+   AND NOT (P.Size IS NULL AND P.Weight IS NULL)
+GROUP BY PC.Name, PM.Name
+HAVING (AVG(SOD.UnitPrice) > 10  OR AVG(SOD.UnitPrice) BETWEEN 200 AND 1000)
+   AND SUM(SOD.LineTotal) > 2000
+   AND AVG(SOD.OrderQty) < 4
+ORDER BY PC.Name, PM.Name
+
+SELECT
+   PM.Name AS Product_Model,
+   PC.Name AS Product_Category,
+   AVG(SOD.LineTotal) AS AVG_Line_Total
+FROM SalesLT.Customer AS C
+   INNER JOIN SalesLT.SalesOrderHeader SOH
+       ON C.CustomerID = SOH.CustomerID
+   INNER JOIN SalesLT.SalesOrderDetail SOD
+       ON SOH.SalesORderID = SOD.SalesOrderID
+   INNER JOIN SalesLt.Product P
+       On SOD.ProductID = P.ProductID
+   INNER JOIN SalesLT.ProductModel PM
+       ON P.ProductModelID = PM.ProductModelID
+
+
+____________________________________________________________________________
+SELECT TOP 10
+       C.CompanyName AS CompanyName,
+       PM.Name AS ProductModelName,
+       SUM(SOD.LineTotal) SUMLineTotal
+FROM SalesLT.Customer AS C
+   INNER JOIN SalesLT.SalesOrderHeader SO
+       ON C.CustomerID = SO.CustomerID
+   INNER JOIN SalesLT.SalesOrderDetail SOD
+       ON SO.SalesOrderID = SOD.SalesOrderID
+   INNER JOIN SalesLT.Product P
+       ON P.ProductID = SOD.ProductID
+   INNER JOIN SalesLT.ProductModel PM
+       ON PM.ProductModelID = P.ProductModelID
+WHERE P.Color IN ('Red', 'Black')
+GROUP BY C.CompanyName, PM.Name
+Order By SUMLineTotal DESC;
+ 
+SELECT TOP 3
+   A.City,
+   COUNT(SOH.SalesOrderID) AS NumBikesSold
+FROM SalesLT.Address A
+   INNER JOIN SalesLT.SalesOrderHeader SOH
+       ON A.AddressID = SOH.BillToAddressID
+   INNER JOIN SalesLT.SalesOrderDetail SOD
+       ON SOH.SalesOrderID = SOD.SalesORderID
+   INNER JOIN SalesLT.Product P
+       ON SOD.ProductID = P.ProductID
+   INNER JOIN SalesLT.ProductCategory PC
+       ON P.ProductCategoryID = PC.ProductCategoryID
+WHERE PC.Name = 'Mountain Bikes'
+GROUP BY A.City
+ORDER BY NumBikesSold DESC;
+ 
+SELECT COUNT(*) FROM SalesLT.Customer
+WHERE MiddleName IS NULL;
+ 
+SELECT MIN(CustomerID) AS MinCustomerID, MAX(CustomerID) AS MaxCustomerID, AVG(CustomerID) AS AvgCustomerID
+FROM SalesLT.Customer AS C
+WHERE CustomerID BETWEEN 20000 AND 30000;  -- WHERE CustomerUD >=20000 AND CustomerID <=30000
+ 
+SELECT * FROM SalesLT.Customer
+WHERE FirstName LIKE '%nn';
+ 
+ 
+--Lab 2 Q 1
+SELECT COUNT(CustomerID) AS TheCount FROM SalesLT.Customer
+WHERE MiddleName IS NULL
+AND Title IS NULL
+AND CustomerID BETWEEN 100 AND 500
+AND Phone LIKE '7%';
+ 
+--Lab 2 Q 2
+SELECT TOP 10
+   ProductNumber,
+   SP.Name,
+   Color
+FROM SalesLT.Product AS SP
+WHERE Color IN ('Black', 'Red')
+   AND ProductNumber NOT LIKE '%R39%'
+   AND StandardCost BETWEEN 0 AND 500
+   OR StandardCost BETWEEN 1000 AND 1500
+ORDER BY Color ASC, ProductNumber DESC, SP.Name ASC;
+ 
+--Lab 2 Q 3
+SELECT TOP 3 Color,
+   COUNT(*) AS TheCount,
+   MIN(SP.Weight) AS MIN_Weight,
+   AVG(SP.Weight) AS AVG_Weight,
+   MAX(SP.Weight) AS MAX_Weight,
+   (MAX(SP.Weight) - MIN(SP.Weight)) AS Variance
+FROM SalesLT.Product AS SP
+WHERE Color NOT IN ('Red', 'Silver')
+   AND SellEndDate IS NULL
+   AND Size NOT IN ('S', 'M', 'L', 'XL')
+   AND Size IS NOT NULL
+GROUP BY Color
+HAVING (MIN(SP.Weight)) >= 900
+ORDER BY TheCount DESC;
+ 
+ 
+--Lab 2 Q 4
+SELECT TOP 2
+   P.Color,
+   COUNT(PM.Name) AS Number_of_Models,
+   (MAX(P.ListPrice) * .9) AS MAX_List_Price_Euros
+FROM SalesLT.Product AS P
+   INNER JOIN SalesLT.ProductModel PM
+       ON P.ProductModelID = PM.ProductModelID
+WHERE P.Color IS NOT NULL
+   AND PM.CatalogDescription IS NOT NULL
+GROUP BY P.Color
+HAVING COUNT(PM.Name) > 9
+   OR MAX(P.ListPrice) < 2385
+ORDER BY P.Color ASC;
+ 
+SELECT
+   PM.Name AS Product_Model,
+   PC.Name AS Product_Category,
+   AVG(SOD.LineTotal) AS AVG_Line_Total
+FROM SalesLT.Customer AS C
+   INNER JOIN SalesLT.SalesOrderHeader SOH
+       ON C.CustomerID = SOH.CustomerID
+   INNER JOIN SalesLT.SalesOrderDetail SOD
+       ON SOH.SalesORderID = SOD.SalesOrderID
+   INNER JOIN SalesLt.Product P
+       On SOD.ProductID = P.ProductID
+   INNER JOIN SalesLT.ProductModel PM
+       ON P.ProductModelID = PM.ProductModelID
+   INNER JOIN SalesLT.ProductCategory PC
+       ON P.ProductCategoryID = PC.ProductCategoryID
+WHERE PC.Name LIKE '%bike%'
+   AND P.Color IN ('Red', 'Black')
+   AND SOH.RevisionNumber = 2
+   AND C.MiddleName IS NULL
+GROUP BY PM.Name, PC.Name
+HAVING SUM(SOD.LineTotal) >= 20000
+ORDER BY AVG(SOD.LineTotal) DESC, PM.Name ASC, PC.Name ASC;
+ 
+--Lab 3 Q1
+SELECT COUNT(*) AS TheCount
+FROM SalesLT.Product
+WHERE Product.Size IS NULL
+   AND Product.Weight IS NULL
+   AND ProductID BETWEEN 100 AND 500
+   AND ProductNumber LIKE 'CA%'
+ 
+ 
+SELECT FirstName,
+       LastName,
+       CompanyName,
+       Phone
+FROM SalesLT.Customer
+WHERE MiddleName IS NOT NULL
+   AND Phone LIKE '129%'
+   AND (CompanyName LIKE '%Sporting%' OR CompanyName LIKE '%Part%')
+   AND (CustomerID BETWEEN 100 AND 600
+   OR CustomerID BETWEEN 20000 AND 30000)
+ORDER BY LastName ASC, CompanyName DESC;
+ 
+SELECT TOP 10 SalesOrderID,
+   COUNT(*) AS TheCount,
+   MIN(LineTotal) AS MIN_LineTotal,
+   AVG(LineTotal) AS AVG_LineTotal,
+   MAX(LineTotal) AS MAX_LineTotal,
+   (MAX(UnitPrice) - MIN(UnitPrice)) AS Unit_Price_Variance
+FROM SalesLT.SalesOrderDetail
+WHERE OrderQty = 1 OR OrderQty = 3 OR OrderQty = 5 OR OrderQty = 7
+   AND ProductID % 2 = 0
+   AND UnitPriceDiscount > 0
+   AND (SalesOrderID BETWEEN 71780 AND 71900 OR SalesOrderID BETWEEN 72000 AND 73000)
+GROUP BY OrderQty, SalesOrderID
+HAVING AVG(LineTotal) >= 100
+ORDER BY TheCount DESC
+ 
+SELECT PC.Name AS Product_Category_Name,
+   PM.Name AS Product_Model_Name,
+   SUM(SOD.LineTotal) AS SUM_Line_Total,
+   AVG(SOD.UnitPrice) AS AVG_Unit_Price
+FROM SalesLT.ProductCategory PC
+   INNER JOIN SalesLT.Product P
+       ON PC.ProductCategoryID = P.ProductCategoryID
+   INNER JOIN SalesLT.ProductModel PM
+       ON P.ProductModelID = PM.ProductModelID
+   INNER JOIN SalesLT.SalesOrderDetail SOD
+       ON P.ProductID = SOD.ProductID
+WHERE P.Color LIKE 'Red'
+   OR P.Color LIKE 'Blue'
+   OR P.Color LIKE 'Multi'
+   AND NOT (P.Size IS NULL AND P.Weight IS NULL)
+GROUP BY PC.Name, PM.Name
+HAVING (AVG(SOD.UnitPrice) > 10 OR AVG(SOD.UnitPrice) BETWEEN 200 AND 1000)
+   AND SUM(SOD.LineTotal) > 2000
+   AND AVG(SOD.OrderQty) < 4
+ORDER BY PC.Name, PM.Name
