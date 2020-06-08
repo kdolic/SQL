@@ -1,0 +1,222 @@
+CREATE TABLE Accountant(
+Accountant_ID char(3) NOT NULL primary key,
+Accountant_Office_Location varchar(20),
+A_Admin_Staff_ID char(3) NOT NULL foreign key references Administration(Admin_Staff_ID)
+);
+
+CREATE TABLE Payroll (
+        	Payroll_ID NOT NULL primary key,
+        	Earrings decimal(3,2),
+        	YTD_Balance decimal(9,2),
+        	Worked_Hours int(10),
+        	Type_Of_Payroll varchar(15) NOT NULL check (Type_Of_Payroll IN (‘D’,’C’)),
+        	A_Admin_StaffID char(3)  foreign key references Administration(Admin_Staff_ID)
+);
+
+CREATE TABLE Chairman(
+        	Chairman_ID char(3) NOT NULL primary key,
+        	Chairman_First_Name varchar(20),
+        	Chairman_Last_Name varchar(2),
+        	Chairman_Phone_number int(16),
+        	Chairman_Address
+        	Chairman_Age int(3),
+        	Chairman_Gender varchar(7),
+        	Chairman_Office_Location varchar(20)
+);
+
+CREATE TABLE Staff (
+        	Staff_ID char(3) NOT NULL primary key,
+        	Staff_First_Name varchar(20) ,
+        	Staff_Last_Name varchar(20),
+        	Staff_Phone int(16),
+        	Staff_Address
+        	Staff_Type char(2),
+        	Staff_Age int(3),
+        	Staff_SSN char(12),
+        	Staff_Gender varchar(7),
+        	Chairman_ID char(3) foreign key references Chairman(Chairman_ID),
+        	Payroll_ID char(3) NOT NULL foreign key references Payroll(Payroll_ID)
+);
+
+CREATE TABLE Administration(
+        	Admin_StaffID char(3) NOT NULL primary key,
+        	Technical_Skill MULTIVALUE
+        	Department_Name varchar(20),
+);
+            
+CREATE TABLE Sales_Rep(
+        	Sales_Rep_ID char(3) NOT NULL primary key,
+S_Admin_StaffID char(3) NOT NULL foreign key references Administration(Admin_Staff_ID)
+);
+
+CREATE TABLE Student_Service_Advisor(
+        	Student_Service_ID char(3) NOT NULL primary key,
+SS_Admin_StaffID char(3) NOT NULL foreign key references Administration(Admin_Staff_ID)
+);
+
+CREATE TABLE External_Relations(
+        	External_Relation_ID char(3) NOT NULL primary key,
+        	ER_Admin_Staff_ID char(3) NOT NULL foreign key references Administration(Admin_Staff_ID)
+);
+
+CREATE TABLE Communication(
+        	Communication_ID char(3) NOT NULL primary key,
+        	C_Admin_Staff_ID char(3) NOT NULL foreign key references Administration(Admin_Staff_ID)
+);
+
+CREATE TABLE Athletic(
+        	Athletic_Staff_ID char(3) NOT NULL primary key,
+        	Department_Name varchar(20)
+);
+
+CREATE TABLE Sport(
+        	Sport_ID char(3) NOT NULL primary key,
+        	Season varchar(15),
+        	Sport_Type varchar(15)
+);
+
+CREATE TABLE Team(
+	Team_ID char(3) NOT NULL primary key,
+	Mens_Team char(1),
+	Womens_Team char(1)
+);
+CREATE TABLE Coach(
+	Coach_ID char(3) NOT NULL primary key,
+	Experience varchar(50),
+	License_Number char(3) NOT NULL,
+	Coach_Type char(1),
+	C_Ath_Staff_ID char(3) foreign key references Athletic(Athletic_Staff_ID)
+);
+
+CREATE TABLE Trainer(
+	Trainer_ID char(3) NOT NULL primary key,
+	T_Ath_Staff_ID char(3) foreign key references Athletic(Athletic_Staff_ID),
+	Skills varchar(50),
+	Degree varchar(50),
+	Sport varchar(20)
+);
+
+CREATE TABLE Schedule(
+	Schedule_ID char(3) NOT NULL primary key,
+	Schedule_Date date,
+	Start_Time int(10),
+	Schedule_Location varchar(20)
+);
+
+CREATE TABLE Event(
+	Event_ID char(3) NOT NULL primary key,
+	Event_Date date,
+	Event_Destination varchar(15),
+	Event_Type varchar(15),
+	Schedule_ID char(3) foreign key references Schedule(Schedule_ID)
+);
+
+CREATE TABLE Customer(
+	Customer_ID char(3) NOT NULL primary key,
+	Customer_First_Name varchar(20),
+	Customer_Last_Name varchar(20),
+	Customer_Email varchar(50),
+	Customer_Address varchar(50),
+	Customer_Phone_Number int(16)
+);
+
+CREATE TABLE Box_Office(
+	Box_Office_ID char(3) NOT NULL primary key,
+	Hours char(15),
+	Address varchar(20),
+	Tickets_Available int(4),
+	Total_Sales decimal(10,2)
+);
+
+CREATE TABLE Ticket(
+	Ticket_ID char(3) NOT NULL primary key,
+	Tciket_Price decimal(3,2),
+	Sport varchar(15),
+	Ticket_Seat_Selection int(3),
+	Ticket_Seat_Number int(3),
+	Box_Office_ID char(3) foreign key references Box_office(Box_Office_ID),
+	Customer_ID char(3) foreign key references Customer(Customer_ID),
+	Event_ID char(3) foreign key references Event(Event_ID)
+);
+
+CREATE TABLE Athlete(
+	Athlete_ID char(3) NOT NULL primary key,
+	Athlete_First_Name varchar(20),
+	Athlete_Last_Name varchar(20),
+	Athlete_Year varchar(10),
+	Athlete_Address varchar(20),
+	GPA decimal (1,2),
+	Major varchar(20),
+	Athlete_Gender char(1),
+	SS_Admin_Staff_ID char(3) foreign key references Administration(Admin_Staff_ID)
+);
+
+CREATE TABLE Sponsor(
+	Sponsor_ID char(3) NOT NULL primary key,
+	Comapany_Name varchar(20),
+	Sponsor_Address varchar(20),
+	Sponsor_phone_Number int(10)
+);
+
+CREATE TABLE Media(
+	Media_Code char(3) NOT NULL primary key,
+Sponsor_ID char(3) NOT NULL froeign key references Sponsor(Sponsor_ID),
+Media_Type varchar(15)
+);	
+CREATE TABLE Donor(
+	Donor_ID char(3) NOT NULL primary key,
+	Donor_First_Name varchar(20),
+	Donor_Last_Name varchar(20),
+	Donation_Date date,
+	Date_received date,
+	Amount_Donated decimal(5,2),
+	Donor_Adress varchar(20),
+	A_Admin_Staff_ID char(3) foreign key references Administration(Admin_Staff_ID)
+);
+	
+CREATE TABLE Direct_Deposit(  
+	DD_Payroll_ID char(3) NOT NULL primary key,
+	Bank_Acct_Number int(20),
+	Bank_Routing_Nmber int(20),
+	Direct_deposit_Date date,
+);
+
+CREATE TABLE Paper_Check(
+	PC_Payroll_ID char(3) NOT NULL primary key,
+	Check_Number int(5),
+	Check_Date date,
+	Deposit_Date date,
+);
+
+CREATE TABLE Recruiter(
+	Recruiter_ID char(3) NOT NULL primary key,
+	REcruiter_First_Name varchar(20),
+	Recruiter_Last_Name varchar(20),
+	Recruiter_Contact varchar(20),
+	Sponsor_ID char(3) foreign key references Sponsor(Sponsor_ID),
+	Donor_ID char(3) foreign key references Donor(Donor_ID)
+);
+
+CREATE TABLE Advertisement(
+	Advertisement_ID char(3) NOT NULL primary key,
+	Advertising_Platform varchar(20), 
+	Company_Contact varchar(20), 
+	Advertisement_Date date,
+	Media_Code char(3) foreign key references Media(Media_Code),
+	C_Admin_Staff_ID char(3) foreign key references Administration(Admin_Staff_ID)
+);
+	
+CREATE TABLE Outcome(
+	Outcome_ID char(3) NOT NULL primary key,
+	Final_Score varchar(10),
+	Home_Points int(5),
+	Away_Points int(5),
+	Current_Record varchar(10),
+	Event_ID char(3) foreign key references Event(Event_ID)
+);
+
+CREATE TABLE Performance(
+	Performance_ID char(3) NOT NULL primary key,
+	Performacne_Date date,
+	Opponent varchar(20)
+);
